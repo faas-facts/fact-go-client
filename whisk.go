@@ -1,4 +1,4 @@
-package factclient
+package fact_go_client
 
 import (
 	"github.com/faas-facts/fact/fact"
@@ -26,11 +26,10 @@ func (O ICFInspector) Init(trace *fact.Trace) {
 }
 
 func (O ICFInspector) Collect(trace fact.Trace, context interface{}) fact.Trace {
-	t := O.GenericInspector.Collect(trace,context)
+	t := O.GenericInspector.Collect(trace, context)
 	t.Cost = float32(math.Floor(float64(t.Memory)/1024.0)) * 0.000017 * float32(t.ExecutionLatency.Seconds)
 	return t
 }
-
 
 type OWInspector struct {
 	GenericInspector
@@ -49,10 +48,10 @@ func (O OWInspector) Init(trace *fact.Trace) {
 	hostname, _ := os.Hostname()
 	trace.HostID = hostname
 
-	bytes, err  := ioutil.ReadFile("/sys/fs/cgroup/memory/memory.limit_in_bytes")
-	if err == nil{
-		memory, err := strconv.ParseInt(string(bytes),10,32)
-		if err == nil{
+	bytes, err := ioutil.ReadFile("/sys/fs/cgroup/memory/memory.limit_in_bytes")
+	if err == nil {
+		memory, err := strconv.ParseInt(string(bytes), 10, 32)
+		if err == nil {
 			trace.Memory = int32(memory)
 		}
 	}

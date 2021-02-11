@@ -1,4 +1,4 @@
-package factclient
+package fact_go_client
 
 /*
 Fact-Client is an implementation of the faas-fact tracing libary.

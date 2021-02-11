@@ -1,4 +1,4 @@
-package factclient
+package fact_go_client
 
 import (
 	"github.com/faas-facts/fact/fact"
@@ -12,7 +12,7 @@ import (
 
 func TestAWSInspector_readCGroupIDs(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "cgroup.txt")
-	file, err := os.OpenFile(path, os.O_RDWR | os.O_CREATE,0664)
+	file, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, 0664)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -32,11 +32,11 @@ func TestAWSInspector_readCGroupIDs(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	assert.Equal(t,trace.Tags["freezer"],"1d3254")
-	assert.Equal(t,trace.Tags["host"],"siNKWg")
-	assert.Equal(t,trace.Tags["service"],"9857cb")
-	assert.Equal(t,trace.Tags["sandbox"],"36b98a")
-	assert.Equal(t,trace.HostID,"siNKWg")
+	assert.Equal(t, trace.Tags["freezer"], "1d3254")
+	assert.Equal(t, trace.Tags["host"], "siNKWg")
+	assert.Equal(t, trace.Tags["service"], "9857cb")
+	assert.Equal(t, trace.Tags["sandbox"], "36b98a")
+	assert.Equal(t, trace.HostID, "siNKWg")
 
 }
 

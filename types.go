@@ -1,4 +1,4 @@
-package factclient
+package fact_go_client
 
 import "github.com/faas-facts/fact/fact"
 

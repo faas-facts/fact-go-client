@@ -1,4 +1,4 @@
-#Fact-Go-Client
+# Fact-Go-Client
 
 This library is a go based client implementation for [Fact](https://github.com/faas-facts/fact).
 
@@ -9,15 +9,15 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/faas-facts/fact-go-client/factclient"
+	fact "github.com/faas-facts/fact-go-client"
 	"net/http"
 )
 
-var client *factclient.FactClient
+var client *fact.FactClient
 
 func init() {
-	client = &factclient.FactClient{}
-	client.Boot(factclient.FactClientConfig{
+	client = &fact.FactClient{}
+	client.Boot(fact.FactClientConfig{
 		SendOnUpdate:       false,
 		IncludeEnvironment: false,
 	})
