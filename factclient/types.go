@@ -18,6 +18,11 @@ type FactClient struct {
 
 type ReceiverType int
 
+const (
+	Console ReceiverType = iota
+	TCP
+)
+
 type FactReceiver interface {
 	Connect(map[string]string) error
 	Send(trace fact.Trace) error
@@ -28,4 +33,5 @@ type FactClientConfig struct {
 	Receiver           *ReceiverType
 	SendOnUpdate       bool
 	IncludeEnvironment bool
+	IOArgs             map[string]string
 }
