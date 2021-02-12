@@ -14,7 +14,7 @@ func (c ConsoleLogger) Connect(m map[string]string) error {
 
 func (c ConsoleLogger) Send(trace fact.Trace) error {
 	data, _ := json.Marshal(trace)
-	fmt.Println(data)
+	fmt.Println(string(data))
 
 	return nil
 }
