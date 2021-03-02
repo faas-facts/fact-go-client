@@ -1,15 +1,39 @@
+/*
+ * Copyright (c) 2021. Sebastian Werner, TU Berlin, Germany
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package fact_go_client
 
 import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/faas-facts/fact/fact"
-	"google.golang.org/protobuf/types/known/durationpb"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/faas-facts/fact/fact"
+	"google.golang.org/protobuf/types/known/durationpb"
 
 	"github.com/aws/aws-lambda-go/lambdacontext"
 )
@@ -91,15 +115,18 @@ func (A *AWSInspector) Collect(trace fact.Trace, ctx interface{}) fact.Trace {
 		deadline, _ := _ctx.Deadline()
 		if lc != nil {
 			trace.Tags["fname"] = lc.InvokedFunctionArn
-			trace.Tags["fver"] = _ctx.Value("FunctionVersion").(string)
+			if ver := _ctx.Value("FunctionVersion"); ver != nil {
+				trace.Tags["fver"] = ver.(string)
+			}
 			trace.Tags["rid"] = lc.AwsRequestID
 		}
 
 		trace.Logs[uint64(time.Now().Unix())] = fmt.Sprintf("RenamingTime %s", time.Until(deadline))
 
-		mem, _ := strconv.ParseInt(_ctx.Value("MemoryLimitInMB").(string), 10, 32)
-		trace.Memory = int32(mem)
-	}
+		if val := _ctx.Value("MemoryLimitInMB"); val != nil {
+			mem, _ := strconv.ParseInt(_ctx.Value("MemoryLimitInMB").(string), 10, 32)
+			trace.Memory = int32(mem)
+		}
 
 	trace.Cost = A.calculateCost(trace)
 
