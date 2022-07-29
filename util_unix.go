@@ -1,5 +1,5 @@
-//go:build !darwin && !arm64
-// +build !darwin,!arm64
+//go:build !darwin
+// +build !darwin
 
 /*
  * Copyright (c) 2022. Sebastian Werner, TU Berlin, Germany
@@ -25,9 +25,9 @@
 
 package fact_go_client
 
-const uptime_func func() int64 = uptime_unix
+import "syscall"
 
-func uptime_unix() int64 {
+func uptime() int64 {
 	si := &syscall.Sysinfo_t{}
 	_ = syscall.Sysinfo(si)
 	return si.Uptime
