@@ -1,5 +1,8 @@
+//go:build darwin && arm64
+// +build darwin,arm64
+
 /*
- * Copyright (c) 2021. Sebastian Werner, TU Berlin, Germany
+ * Copyright (c) 2022. Sebastian Werner, TU Berlin, Germany
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,34 +26,15 @@
 package fact_go_client
 
 import (
-	"os"
+	"golang.org/x/sys/unix"
 )
 
-func (fc *FactClient) inspectorFromEnvironment() {
-	var inspect Inspector
+func uptime() int64 {
 
-	awsKey := os.Getenv("AWS_LAMBDA_LOG_STREAM_NAME")
-	gcfKey := os.Getenv("X_GOOGLE_FUNCTION_NAME")
-	owKey := os.Getenv("__OW_ACTION_NAME")
-	acfKey := os.Getenv("WEBSITE_HOSTNAME")
-
-	if awsKey != "" {
-		inspect = &AWSInspector{}
-	} else if gcfKey != "" {
-		inspect = &GCFInspector{}
-	} else if acfKey != "" {
-		inspect = &ACFInspector{}
-	} else if owKey != "" {
-		//TODO OW.init
-		if _, err := os.Stat("/sys/hypervisor/uuid"); err == nil {
-			inspect = &ICFInspector{}
-		} else {
-			inspect = &OWInspector{}
-		}
-	} else {
-		//TODO OW.init
-		inspect = &GenericInspector{}
+	tv, err := unix.SysctlTimeval("kern.boottime")
+	if err != nil {
+		return -1
 	}
 
-	fc.platformInspector = inspect
+	return tv.Sec
 }

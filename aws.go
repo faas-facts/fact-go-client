@@ -128,6 +128,10 @@ func (A *AWSInspector) Collect(trace fact.Trace, ctx interface{}) fact.Trace {
 			trace.Memory = int32(mem)
 		}
 
+	} else {
+		log.Infof("%+v", ctx)
+	}
+
 	trace.Cost = A.calculateCost(trace)
 
 	return trace
